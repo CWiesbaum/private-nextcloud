@@ -1,0 +1,89 @@
+{
+  "name": "Nextcloud IaC Development",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-docker",
+        "redhat.vscode-podman",
+        "timonwong.shellcheck",
+        "foxundermoon.shell-format",
+        "editorconfig.editorconfig",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "yaml.schemas": {
+          "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml",
+          "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": "docker-compose*.yml"
+        }
+      }
+    }
+  },
+  
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "upgradePackages": true,
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000"
+    }
+  },
+  
+  "forwardPorts": [
+    8080,
+    443,
+    3306,
+    5432,
+    6379
+  ],
+  
+  "portsAttributes": {
+    "8080": {
+      "label": "Nextcloud HTTP",
+      "onAutoForward": "notify"
+    },
+    "443": {
+      "label": "Nextcloud HTTPS",
+      "onAutoForward": "notify"
+    },
+    "3306": {
+      "label": "MariaDB",
+      "onAutoForward": "silent"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "silent"
+    }
+  },
+  
+  "remoteUser": "vscode",
+  "containerUser": "vscode",
+  
+  "remoteEnv": {
+    "DOCKER_BUILDKIT": "1",
+    "COMPOSE_DOCKER_CLI_BUILD": "1"
+  },
+  
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  
+  "overrideCommand": false,
+  
+  "mounts": []
+}
