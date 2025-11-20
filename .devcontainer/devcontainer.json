@@ -1,0 +1,24 @@
+{
+  "name": "Nextcloud IaC Development",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "moby": true,
+      "dockerDashComposeVersion": "v2"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "upgradePackages": true,
+      "username": "vscode"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+        "packages": "curl,wget,vim,podman,podman-compose"
+    }
+  },
+  
+  "remoteUser": "vscode",
+  "containerUser": "vscode"
+}

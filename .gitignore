@@ -1,0 +1,59 @@
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor and IDE
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+/tmp/
+*.tmp
+*.bak
+*.log
+
+# Environment files
+.env
+.env.local
+*.env
+
+# Secrets and credentials
+secrets/
+*.key
+*.pem
+*.crt
+*.p12
+
+# Build artifacts
+dist/
+build/
+
+# Container runtime
+podman-*.pid
+*.sock
+
+# Backup files
+backups/
+*.tar.gz
+*.zip
+*.backup
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Node
+node_modules/
+package-lock.json
+yarn.lock
