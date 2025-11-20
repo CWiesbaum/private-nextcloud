@@ -6,12 +6,7 @@
     "vscode": {
       "extensions": [
         "redhat.vscode-yaml",
-        "ms-azuretools.vscode-docker",
-        "redhat.vscode-podman",
-        "timonwong.shellcheck",
-        "foxundermoon.shell-format",
-        "editorconfig.editorconfig",
-        "streetsidesoftware.code-spell-checker"
+        "redhat.vscode-podman"
       ],
       "settings": {
         "terminal.integrated.defaultProfile.linux": "bash",
