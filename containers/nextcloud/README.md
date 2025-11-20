@@ -28,7 +28,7 @@ The following volumes should be mounted for persistent data:
 
 ### Port Mapping
 
-- **HTTP**: `443` - HTTPS web interface (internal container port)
+- **HTTPS**: `443` - HTTPS web interface (internal container port)
 - **HTTP**: `80` - HTTP web interface (internal container port)
 
 ## Running with Podman
@@ -52,9 +52,9 @@ podman run -d \
 
 ### Systemd Integration
 
-For systemd user service integration, use the service file located in `systemd/nextcloud.service`.
+For systemd user service integration, a service file will be created in `systemd/nextcloud.service` in a future update.
 
-Enable and start with:
+Once available, you can enable and start with:
 
 ```bash
 systemctl --user enable nextcloud.service
