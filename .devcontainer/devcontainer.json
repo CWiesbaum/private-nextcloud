@@ -34,6 +34,9 @@
       "username": "vscode",
       "userUid": "1000",
       "userGid": "1000"
+    },
+    "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
+        "packages": "curl,wget,vim,podman,podman-compose"
     }
   },
   
@@ -75,8 +78,6 @@
     "DOCKER_BUILDKIT": "1",
     "COMPOSE_DOCKER_CLI_BUILD": "1"
   },
-  
-  "postCreateCommand": "bash .devcontainer/post-create.sh",
   
   "overrideCommand": false,
   
