@@ -1,6 +1,20 @@
 {
   "name": "Nextcloud IaC Development",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.vscode-yaml"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "yaml.schemas": {
+          "https://json.schemastore.org/github-workflow.json": ".github/workflows/*.yml",
+          "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": "docker-compose*.yml"
+        }
+      }
+    }
+  },
   "features": {
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "version": "latest",
@@ -16,6 +30,36 @@
     },
     "ghcr.io/rocker-org/devcontainer-features/apt-packages:1": {
         "packages": "curl,wget,vim,podman,podman-compose"
+    }
+  },
+  "forwardPorts": [
+    8080,
+    443,
+    3306,
+    5432,
+    6379
+  ],
+  
+  "portsAttributes": {
+    "8080": {
+      "label": "Nextcloud HTTP",
+      "onAutoForward": "notify"
+    },
+    "443": {
+      "label": "Nextcloud HTTPS",
+      "onAutoForward": "notify"
+    },
+    "3306": {
+      "label": "MariaDB",
+      "onAutoForward": "silent"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    },
+    "6379": {
+      "label": "Redis",
+      "onAutoForward": "silent"
     }
   },
   
