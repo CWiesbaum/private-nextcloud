@@ -72,7 +72,6 @@ podman pull "$IMAGE_NAME"
 info "Starting Nextcloud container..."
 podman run -d \
     --name "$CONTAINER_NAME" \
-    --user "$(id -u):$(id -g)" \
     -e PUID="$(id -u)" \
     -e PGID="$(id -g)" \
     -e TZ="$TIMEZONE" \

@@ -38,7 +38,6 @@ The following volumes should be mounted for persistent data:
 ```bash
 podman run -d \
   --name nextcloud \
-  --user $(id -u):$(id -g) \
   -e PUID=$(id -u) \
   -e PGID=$(id -g) \
   -e TZ=Etc/UTC \
