@@ -130,10 +130,14 @@ services:
 ## Environment Variables
 
 Standard environment variables (document in README):
-- `NEXTCLOUD_DATA_DIR` - Data directory path
 - `NEXTCLOUD_PORT` - HTTP port (default: 8080)
 - `DB_TYPE` - Database type (mariadb/postgresql)
-- `DB_PASSWORD` - Database password
+- `DB_ROOT_PASSWORD` - Database root password
+- `DB_PASSWORD` - Nextcloud database password
+- `DB_NAME` - Database name (default: nextcloud)
+- `REDIS_PASSWORD` - Redis password (optional)
+- `UID` - User ID for rootless operation (default: 1000)
+- `GID` - Group ID for rootless operation (default: 1000)
 
 ## Script Conventions
 

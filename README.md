@@ -46,7 +46,7 @@ The setup is designed to be production-ready, secure, and easy to maintain.
 
 - Fedora Server (tested on Fedora 38+)
 - Podman installed (`dnf install podman`)
-- podman-compose installed (`pip3 install podman-compose`)
+- podman-compose installed (`dnf install podman-compose` or `pip3 install podman-compose`)
 - Sufficient disk space for Nextcloud data
 - Domain name (optional, for HTTPS setup)
 
