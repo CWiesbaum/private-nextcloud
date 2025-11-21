@@ -120,7 +120,8 @@ services:
 ```
 
 ### Security Context
-- Use user mapping for rootless operation in docker-compose YAML: `user: "${UID:-1000}:${GID:-1000}"`
+- Use user mapping for rootless operation in docker-compose.yml: `user: "${UID:-1000}:${GID:-1000}"`
+  - Note: This is YAML syntax for compose files. In shell/Podman commands, use `--user $(id -u):$(id -g)`
 - For bind mounts (not named volumes), use SELinux labels on Fedora:
   - Named volumes (recommended, no label needed): `nextcloud_data:/var/www/html/data`
   - Private bind mounts: `/host/path:/container/path:Z` (uppercase Z for private labeling)

@@ -307,14 +307,10 @@ podman-compose logs redis
 
 Ensure proper user/group IDs are set in `.env` (defaults to 1000:1000 if not set):
 ```bash
-# Edit the .env file and add/update your user's UID and GID
 cd compose
 cp .env.example .env
-# Then add these lines to .env:
-# UID=1000  # Replace with your $(id -u)
-# GID=1000  # Replace with your $(id -g)
 
-# Or set them automatically (safe to run multiple times):
+# Add your user's UID and GID automatically (safe to run multiple times):
 grep -q "^UID=" .env || echo "UID=$(id -u)" >> .env
 grep -q "^GID=" .env || echo "GID=$(id -g)" >> .env
 ```
