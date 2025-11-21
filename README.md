@@ -1,6 +1,6 @@
 # Private Nextcloud
 
-Infrastructure as Code (IaC) for deploying Nextcloud on a private Fedora server using Podman containers managed by systemd units.
+Infrastructure as Code (IaC) for deploying Nextcloud on a private Fedora server using Docker Compose to orchestrate Podman containers.
 
 ## 📋 Table of Contents
 
@@ -379,7 +379,8 @@ This project is licensed under the GNU General Public License v2.0 - see the [LI
 
 - [Nextcloud Documentation](https://docs.nextcloud.com/)
 - [Podman Documentation](https://docs.podman.io/)
-- [systemd Documentation](https://www.freedesktop.org/software/systemd/man/)
+- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- [podman-compose Documentation](https://github.com/containers/podman-compose)
 - [Fedora Server Documentation](https://docs.fedoraproject.org/en-US/fedora-server/)
 
 ---
