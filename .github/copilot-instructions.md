@@ -111,7 +111,7 @@ services:
   nextcloud:
     container_name: nextcloud
     image: nextcloud:latest
-    user: "${UID}:${GID}"  # Rootless operation
+    user: "${UID:-1000}:${GID:-1000}"  # Rootless operation with defaults
     depends_on:
       db:
         condition: service_healthy
@@ -120,8 +120,10 @@ services:
 ```
 
 ### Security Context
-- Use user mapping for rootless operation: `user: "${UID}:${GID}"`
-- Use SELinux labels with `:z` suffix on bind mounts (Fedora-specific)
+- Use user mapping for rootless operation: `user: "${UID:-1000}:${GID:-1000}"`
+- For bind mounts (not named volumes), use SELinux labels with `:z` suffix on Fedora
+  - Named volumes (recommended): `nextcloud_data:/var/www/html/data`
+  - Bind mounts: `/host/path:/container/path:z`
 - Avoid privileged mode unless absolutely necessary
 - Use read-only root filesystem where possible: `read_only: true`
 

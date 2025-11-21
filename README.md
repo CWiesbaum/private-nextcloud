@@ -190,8 +190,8 @@ Configuration is managed through the `.env` file in the `compose/` directory. Co
 - `DB_PASSWORD` - Nextcloud database password
 - `DB_NAME` - Database name (default: nextcloud)
 - `REDIS_PASSWORD` - Redis password (optional)
-- `UID` - User ID for rootless operation
-- `GID` - Group ID for rootless operation
+- `UID` - User ID for rootless operation (default: 1000)
+- `GID` - Group ID for rootless operation (default: 1000)
 
 ### Docker Compose Configuration
 
@@ -305,10 +305,11 @@ podman-compose logs redis
 
 ### Permission issues
 
-Ensure proper user/group IDs are set in `.env`:
+Ensure proper user/group IDs are set in `.env` (defaults to 1000:1000 if not set):
 ```bash
-echo "UID=$(id -u)" >> .env
-echo "GID=$(id -g)" >> .env
+# Add your user's UID and GID to .env
+echo "UID=$(id -u)" >> compose/.env
+echo "GID=$(id -g)" >> compose/.env
 ```
 
 For SELinux contexts (Fedora):
