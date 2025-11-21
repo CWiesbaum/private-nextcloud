@@ -1,6 +1,6 @@
 # Private Nextcloud
 
-Infrastructure as Code (IaC) for deploying Nextcloud on a private Fedora server using Podman containers managed by systemd units.
+Infrastructure as Code (IaC) for deploying Nextcloud on a private Fedora server using Docker Compose to orchestrate Podman containers.
 
 ## 📋 Table of Contents
 
@@ -20,8 +20,8 @@ Infrastructure as Code (IaC) for deploying Nextcloud on a private Fedora server 
 
 This repository provides a complete Infrastructure as Code solution for deploying and managing a Nextcloud instance on a private Fedora server. The deployment uses:
 
+- **Docker Compose** for orchestrating the complete container stack
 - **Podman** as the container runtime (rootless and daemonless)
-- **systemd** units for container lifecycle management
 - **GitHub Codespaces** for development environment
 
 The setup is designed to be production-ready, secure, and easy to maintain.
@@ -29,11 +29,11 @@ The setup is designed to be production-ready, secure, and easy to maintain.
 ## ✨ Features
 
 - 🐳 Rootless Podman containers for enhanced security
-- 🔄 systemd integration for automatic container startup and management
+- 🎼 Docker Compose orchestration for complete stack management
 - 🛠️ Complete development environment via GitHub Codespaces
 - 📦 Modular and maintainable IaC structure
 - 🔒 Security-first approach with minimal privileges
-- 📊 Easy monitoring and logging integration
+- 📊 Easy monitoring and logging via compose
 
 ## 📦 Prerequisites
 
@@ -46,7 +46,7 @@ The setup is designed to be production-ready, secure, and easy to maintain.
 
 - Fedora Server (tested on Fedora 38+)
 - Podman installed (`dnf install podman`)
-- systemd (included in Fedora by default)
+- podman-compose installed (`dnf install podman-compose` or `pip3 install podman-compose`)
 - Sufficient disk space for Nextcloud data
 - Domain name (optional, for HTTPS setup)
 
@@ -104,7 +104,7 @@ The devcontainer includes:
 
 - **Tools:**
   - Podman and podman-compose
-  - Docker (via Docker-in-Docker feature)
+  - Docker and docker-compose (via Docker-in-Docker feature)
   - Git
   - yamllint
   - Common utilities (curl, wget, jq, vim, etc.)
@@ -120,24 +120,23 @@ The devcontainer includes:
 
 ```
 private-nextcloud/
-├── .devcontainer/           # Development container configuration
-│   ├── devcontainer.json   # VS Code devcontainer config
-│   └── post-create.sh      # Post-creation setup script
-├── containers/             # Container definitions (to be added)
-│   ├── nextcloud/         # Nextcloud container config
-│   ├── database/          # Database container config
-│   └── redis/             # Redis cache container config
-├── systemd/               # systemd unit files (to be added)
-│   ├── nextcloud.service
-│   ├── nextcloud-db.service
-│   └── nextcloud-redis.service
-├── scripts/               # Helper scripts (to be added)
-│   ├── deploy.sh
-│   ├── backup.sh
-│   └── restore.sh
-├── docs/                  # Additional documentation (to be added)
-├── LICENSE               # GPL v2 License
-└── README.md            # This file
+├── .devcontainer/              # Development container configuration
+│   ├── devcontainer.json      # VS Code devcontainer config
+│   └── post-create.sh         # Post-creation setup script
+├── compose/                    # Docker Compose stack definitions
+│   ├── docker-compose.yml     # Main compose file
+│   ├── docker-compose.prod.yml # Production overrides
+│   └── .env.example           # Environment variables template
+├── config/                     # Service-specific configurations
+│   ├── nextcloud/             # Nextcloud configuration files
+│   ├── database/              # Database init scripts
+│   └── redis/                 # Redis configuration
+├── scripts/                    # Helper scripts
+│   ├── deploy.sh              # Deployment script
+│   ├── backup.sh              # Backup script
+│   └── restore.sh             # Restore script
+├── LICENSE                     # GPL v2 License
+└── README.md                  # This file
 ```
 
 ## 🚀 Deployment
@@ -152,39 +151,66 @@ private-nextcloud/
    cd private-nextcloud
    ```
 
-2. **Review and customize configuration** (coming soon)
-
-3. **Run the deployment script:**
+2. **Configure environment variables:**
    ```bash
-   ./scripts/deploy.sh
+   cd compose
+   cp .env.example .env
+   # Edit .env with your configuration
+   nano .env
    ```
 
-4. **Enable and start systemd services:**
+3. **Deploy the stack:**
    ```bash
-   systemctl --user enable nextcloud.service
-   systemctl --user start nextcloud.service
+   podman-compose up -d
    ```
 
-### Manual Deployment Steps
+4. **Verify deployment:**
+   ```bash
+   podman-compose ps
+   podman-compose logs -f
+   ```
 
-Detailed manual deployment steps will be added as the IaC components are developed.
+### Using the Deployment Script
+
+Alternatively, use the automated deployment script:
+
+```bash
+./scripts/deploy.sh
+```
 
 ## ⚙️ Configuration
 
-Configuration options will be documented here as they are implemented.
-
 ### Environment Variables
 
-- `NEXTCLOUD_DATA_DIR` - Path to Nextcloud data directory
+Configuration is managed through the `.env` file in the `compose/` directory. Copy `.env.example` to `.env` and customize:
+
 - `NEXTCLOUD_PORT` - HTTP port for Nextcloud (default: 8080)
 - `DB_TYPE` - Database type (mariadb/postgresql)
-- `DB_PASSWORD` - Database password
+- `DB_ROOT_PASSWORD` - Database root password
+- `DB_PASSWORD` - Nextcloud database password
+- `DB_NAME` - Database name (default: nextcloud)
+- `REDIS_PASSWORD` - Redis password (optional)
+- `UID` - User ID for rootless operation (default: 1000)
+- `GID` - Group ID for rootless operation (default: 1000)
 
-### Volume Mounts
+### Docker Compose Configuration
 
-- `/var/lib/nextcloud/data` - Nextcloud data
-- `/var/lib/nextcloud/config` - Nextcloud configuration
-- `/var/lib/nextcloud/db` - Database data
+The main stack is defined in `compose/docker-compose.yml`. For production deployments, override settings using `compose/docker-compose.prod.yml`:
+
+```bash
+podman-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+```
+
+### Volumes
+
+The stack uses named Docker volumes for data persistence:
+
+- `nextcloud_data` - Nextcloud application data
+- `nextcloud_config` - Nextcloud configuration files
+- `db_data` - Database files
+- `redis_data` - Redis persistence (optional)
+
+To backup volumes, see the [Maintenance](#-maintenance) section.
 
 ## 🔧 Maintenance
 
@@ -203,60 +229,144 @@ Configuration options will be documented here as they are implemented.
 ### Update Nextcloud
 
 ```bash
-# Pull latest image
-podman pull docker.io/library/nextcloud:latest
+# Navigate to compose directory
+cd compose
 
-# Restart service
-systemctl --user restart nextcloud.service
+# Pull latest images
+podman-compose pull
+
+# Recreate containers with new images
+podman-compose up -d
 ```
 
 ### View Logs
 
 ```bash
-# Nextcloud logs
-journalctl --user -u nextcloud.service -f
+# All services
+podman-compose logs -f
 
-# Container logs
-podman logs -f nextcloud
+# Specific service
+podman-compose logs -f nextcloud
+
+# View last 100 lines
+podman-compose logs --tail=100 nextcloud
+```
+
+### Stop/Start Stack
+
+```bash
+# Stop all services
+podman-compose down
+
+# Start all services
+podman-compose up -d
+
+# Restart specific service
+podman-compose restart nextcloud
 ```
 
 ## 🐛 Troubleshooting
 
-### Container won't start
+### Stack won't start
 
-1. Check systemd service status:
+1. Check compose file syntax:
    ```bash
-   systemctl --user status nextcloud.service
+   podman-compose config
    ```
 
-2. Check Podman logs:
+2. Check service status:
    ```bash
-   podman logs nextcloud
+   podman-compose ps
    ```
 
-3. Verify port availability:
+3. View service logs:
+   ```bash
+   podman-compose logs
+   ```
+
+4. Verify port availability:
    ```bash
    ss -tulpn | grep :8080
    ```
 
+### Service-specific issues
+
+Check individual service logs:
+```bash
+# Nextcloud
+podman-compose logs nextcloud
+
+# Database
+podman-compose logs db
+
+# Redis
+podman-compose logs redis
+```
+
 ### Permission issues
 
-Ensure proper SELinux contexts if enabled:
+Ensure proper user/group IDs are set in `.env` (defaults to 1000:1000 if not set):
 ```bash
-chcon -R -t container_file_t /var/lib/nextcloud/
+cd compose
+cp .env.example .env
+
+# Add your user's UID and GID automatically (safe to run multiple times):
+grep -q "^UID=" .env || echo "UID=$(id -u)" >> .env
+grep -q "^GID=" .env || echo "GID=$(id -g)" >> .env
+```
+
+For SELinux contexts (Fedora):
+```bash
+# Check if SELinux is enforcing
+getenforce
+
+# For bind mounts in docker-compose.yml, use appropriate labels:
+# - Private mounts: /host/path:/container/path:Z (uppercase)
+# - Shared mounts: /host/path:/container/path:z (lowercase)
+# - Named volumes don't need labels
 ```
 
 ### Database connection issues
 
-1. Verify database container is running:
+1. Verify database service is running:
    ```bash
-   podman ps | grep nextcloud-db
+   podman-compose ps db
    ```
 
 2. Check database logs:
    ```bash
-   podman logs nextcloud-db
+   podman-compose logs db
    ```
+
+3. Verify connection from Nextcloud container:
+   ```bash
+   podman-compose exec nextcloud ping db
+   ```
+
+### Network issues
+
+1. List compose networks:
+   ```bash
+   podman network ls
+   ```
+
+2. Inspect compose network:
+   ```bash
+   podman network inspect private-nextcloud_default
+   ```
+
+### Reset and clean start
+
+```bash
+# Stop and remove everything
+podman-compose down -v
+
+# Remove images (optional)
+podman-compose down --rmi all
+
+# Start fresh
+podman-compose up -d
+```
 
 ## 🤝 Contributing
 
@@ -276,7 +386,8 @@ This project is licensed under the GNU General Public License v2.0 - see the [LI
 
 - [Nextcloud Documentation](https://docs.nextcloud.com/)
 - [Podman Documentation](https://docs.podman.io/)
-- [systemd Documentation](https://www.freedesktop.org/software/systemd/man/)
+- [Docker Compose Documentation](https://docs.docker.com/compose/)
+- [podman-compose Documentation](https://github.com/containers/podman-compose)
 - [Fedora Server Documentation](https://docs.fedoraproject.org/en-US/fedora-server/)
 
 ---
