@@ -314,7 +314,7 @@ cp .env.example .env
 # UID=1000  # Replace with your $(id -u)
 # GID=1000  # Replace with your $(id -g)
 
-# Or set them automatically (be careful not to run multiple times):
+# Or set them automatically (safe to run multiple times):
 grep -q "^UID=" .env || echo "UID=$(id -u)" >> .env
 grep -q "^GID=" .env || echo "GID=$(id -g)" >> .env
 ```
@@ -324,7 +324,10 @@ For SELinux contexts (Fedora):
 # Check if SELinux is enforcing
 getenforce
 
-# Add :z label to bind mounts in docker-compose.yml if needed
+# For bind mounts in docker-compose.yml, use appropriate labels:
+# - Private mounts: /host/path:/container/path:Z (uppercase)
+# - Shared mounts: /host/path:/container/path:z (lowercase)
+# - Named volumes don't need labels
 ```
 
 ### Database connection issues

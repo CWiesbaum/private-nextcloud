@@ -120,10 +120,11 @@ services:
 ```
 
 ### Security Context
-- Use user mapping for rootless operation: `user: "${UID:-1000}:${GID:-1000}"`
-- For bind mounts (not named volumes), use SELinux labels with `:z` suffix on Fedora
-  - Named volumes (recommended): `nextcloud_data:/var/www/html/data`
-  - Bind mounts: `/host/path:/container/path:z`
+- Use user mapping for rootless operation in docker-compose YAML: `user: "${UID:-1000}:${GID:-1000}"`
+- For bind mounts (not named volumes), use SELinux labels on Fedora:
+  - Named volumes (recommended, no label needed): `nextcloud_data:/var/www/html/data`
+  - Private bind mounts: `/host/path:/container/path:Z` (uppercase Z for private labeling)
+  - Shared bind mounts: `/host/path:/container/path:z` (lowercase z for multi-container sharing)
 - Avoid privileged mode unless absolutely necessary
 - Use read-only root filesystem where possible: `read_only: true`
 
